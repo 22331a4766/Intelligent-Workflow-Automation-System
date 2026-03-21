@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Intelligent Workflow Automation - Premium Presentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Reveal.js Core -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.css">
+    <!-- Theme (League gives a very premium dark gradient feel) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/league.min.css" id="theme">
+    
+    <style>
+        .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+            text-transform: none;
+            font-weight: 600;
+        }
+        .reveal img { 
+            max-height: 500px; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+        .highlight { color: #f39c12; font-weight: bold;}
+        .highlight-blue { color: #3498db; font-weight: bold;}
+        .highlight-green { color: #2ecc71; font-weight: bold;}
+        .highlight-red { color: #e74c3c; font-weight: bold;}
+        
+        .flex-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+        }
+        .flex-item {
+            flex: 1;
+            text-align: left;
+        }
+        .reveal ul {
+            font-size: 0.9em;
+            line-height: 1.4em;
+        }
+        .reveal li { margin-bottom: 15px; }
+        
+        /* Custom slide background */
+        .premium-bg {
+            background: radial-gradient(circle at center, #2c3e50 0%, #000000 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- Slide 1: Title -->
+            <section data-background-gradient="linear-gradient(to bottom right, #1a2a6c, #11295b, #0b1a30)">
+                <h1 style="font-size: 2.5em; text-shadow: 2px 2px 10px rgba(0,0,0,0.8);">Intelligent Workflow <br><span class="highlight">Automation System</span></h1>
+                <p style="font-size: 1.2em; margin-top: 30px;" class="fragment">Enterprise Automation Powered by AI</p>
+                <div class="fragment" style="margin-top: 50px; font-size: 0.8em; opacity: 0.7;">
+                    <p>Designed for Scale | Cross-Platform | Dynamic Orchestration</p>
+                </div>
+            </section>
+
+            <!-- Slide 2: The Problem & Solution -->
+            <section>
+                <h2>The Objective</h2>
+                <div class="flex-container">
+                    <div class="flex-item fragment fade-right">
+                        <h4 class="highlight-red">The Problem</h4>
+                        <ul>
+                            <li>Manual lead qualification is slow and error-prone.</li>
+                            <li>Siloed data across CRM, Email, and SMS platforms.</li>
+                            <li>Static "If-This-Then-That" logic breaks at scale.</li>
+                        </ul>
+                    </div>
+                    <div class="flex-item fragment fade-left">
+                        <h4 class="highlight-green">The Solution</h4>
+                        <ul>
+                            <li><strong>Automate</strong> execution asynchronously.</li>
+                            <li><strong>Orchestrate</strong> via a centralized event-driven engine.</li>
+                            <li><strong>Inject AI</strong> variable scoring for dynamic pathways.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 3: System Architecture Image -->
+            <section>
+                <h2>🏗 System Architecture</h2>
+                <p style="font-size: 0.8em; margin-bottom: 20px;" class="fragment fade-in">Microservices approach providing high availability and modular integration.</p>
+                <div class="fragment zoom-in">
+                    <img src="images/architecture.png" alt="Architecture Diagram" />
+                </div>
+            </section>
+
+            <!-- Slide 4: AI Decision Layer -->
+            <section data-transition="convex">
+                <h2>🤖 AI Decision Engine</h2>
+                <div class="flex-container">
+                    <div class="flex-item">
+                        <ul>
+                            <li class="fragment custom-fade-up"><strong>Ingestion:</strong> Consumes data points (Forms, History, Profile).</li>
+                            <li class="fragment custom-fade-up"><strong>Processing:</strong> Calculates probabilistic lead score in real-time.</li>
+                            <li class="fragment custom-fade-up"><strong>Actionable Output:</strong> Recommends explicit workflow branch.</li>
+                        </ul>
+                    </div>
+                    <div class="flex-item fragment fade-in-then-semi-out">
+                        <img src="images/ai_scoring.png" alt="AI Scoring Logic" />
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 5: Workflow Flowchart -->
+            <section data-transition="zoom">
+                <h2>⚙️ Execution Workflow</h2>
+                <div class="flex-container">
+                    <div class="flex-item fragment fade-right">
+                        <p>How a single event maps to final actions based on AI scores:</p>
+                        <ul>
+                            <li><span class="highlight-blue">High Interest (>80):</span> SMS + Sales Priority.</li>
+                            <li><span class="highlight-green">Medium Interest (40-79):</span> Automated Email Nurture.</li>
+                            <li><span class="highlight-red">Low Interest (<40):</span> Added to Passive Storage.</li>
+                        </ul>
+                    </div>
+                    <div class="flex-item fragment fade-in">
+                        <img src="images/workflow.png" alt="Workflow Flowchart Diagram" />
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 6: Tech Stack -->
+            <section>
+                <h2>🧰 The Tech Stack Matrix</h2>
+                <br>
+                <table class="fragment fade-up" style="width: 100%; font-size: 0.8em; text-align: left;">
+                    <thead>
+                        <tr style="color: #f39c12; border-bottom: 2px solid white;">
+                            <th>Domain</th>
+                            <th>Technology Choice</th>
+                            <th>Justification</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Backend Core</strong></td>
+                            <td>Node.js (Express)</td>
+                            <td>Non-blocking I/O for massive webhook payloads</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Queue/Broker</strong></td>
+                            <td>Redis (BullMQ)</td>
+                            <td>Async execution guarantees, no thread blocking</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Decision Logic</strong></td>
+                            <td>Python/Scikit-Learn API</td>
+                            <td>Industry standard for predictive matrix scoring</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Database Storage</strong></td>
+                            <td>PostgreSQL</td>
+                            <td>ACID compliance required for rigid CRM state</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Slide 7: Live Demo / Future -->
+            <section data-background-color="#111">
+                <h2>🚀 The Future of Automation</h2>
+                <ul style="opacity: 0.8;">
+                    <li class="fragment fade-up"><strong>Temporal Workflows:</strong> "Wait 3 days, check email open status, branch left."</li>
+                    <li class="fragment fade-up"><strong>Generative AI Emails:</strong> Drafting highly personalized copy utilizing LLMs.</li>
+                    <li class="fragment fade-up"><strong>Self-Optimizing Paths:</strong> AI dynamically A/B tests higher converting pathways.</li>
+                </ul>
+                <br><br>
+                <div class="fragment zoom-in" style="margin-top: 40px;">
+                    <a href="/" target="_blank" style="padding: 15px 40px; background: linear-gradient(135deg, #f39c12, #e67e22); color: white; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 1.2em; box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);">🎯 Launch Interactive Demo</a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.js"></script>
+    <script>
+        Reveal.initialize({
+            controls: true,
+            progress: true,
+            center: true,
+            hash: true,
+            transition: 'slide', // none/fade/slide/convex/concave/zoom
+            backgroundTransition: 'fade',
+            fragments: true,
+            slideNumber: 'c/t'
+        });
+    </script>
+</body>
+</html>

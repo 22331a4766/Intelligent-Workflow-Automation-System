@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelligent Workflow Automation</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 1200px; margin: 0 auto; display: flex; gap: 20px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex: 1; }
+        h1, h2 { color: #2c3e50; }
+        form { display: flex; flex-direction: column; gap: 15px; }
+        label { font-weight: bold; }
+        input, select, button { padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
+        button { background-color: #3498db; color: white; cursor: pointer; border: none; font-weight: bold; }
+        button:hover { background-color: #2980b9; }
+        #logs { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 5px; height: 400px; overflow-y: auto; font-family: monospace; }
+        .log-entry { margin-bottom: 5px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .ppt-link { background: #e74c3c; color: white; text-decoration: none; padding: 10px 15px; border-radius: 5px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Intelligent Workflow System - Dashboard</h1>
+        <a href="presentation.html" class="ppt-link" target="_blank">📄 View Project Presentation (PPT)</a>
+    </div>
+    <div class="container">
+        <!-- Lead Simulation Form -->
+        <div class="card">
+            <h2>Simulate New Lead</h2>
+            <form id="leadForm">
+                <label>Name</label>
+                <input type="text" id="name" required placeholder="John Doe">
+                
+                <label>Phone</label>
+                <input type="text" id="phone" value="555-0199">
+                
+                <label>Interest Level</label>
+                <select id="interest" required>
+                    <option value="High">High (High Score -> Instant Contact)</option>
+                    <option value="Medium" selected>Medium (Nurture)</option>
+                    <option value="Low">Low (Passive)</option>
+                </select>
+                
+                <button type="submit">Trigger Workflow</button>
+            </form>
+            <br>
+            <button onclick="clearLogs()" style="background-color:#7f8c8d; width:100%;">Clear Logs</button>
+        </div>
+
+        <!-- Terminal Output -->
+        <div class="card">
+            <h2>System Execution Logs</h2>
+            <div id="logs">Waiting for events...</div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('leadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                interest_level: document.getElementById('interest').value,
+                status: 'New'
+            };
+            await fetch('/api/leads', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            document.getElementById('name').value = '';
+        });
+
+        async function fetchLogs() {
+            try {
+                const res = await fetch('/api/logs');
+                const logs = await res.json();
+                const logDiv = document.getElementById('logs');
+                if (logs.length === 0) {
+                    logDiv.innerHTML = "Waiting for events...";
+                } else {
+                    logDiv.innerHTML = logs.map(l => `<div class="log-entry">${l}</div>`).join('');
+                }
+                logDiv.scrollTop = logDiv.scrollHeight;
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function clearLogs() {
+            await fetch('/api/clear-logs');
+            fetchLogs();
+        }
+
+        setInterval(fetchLogs, 1000);
+        fetchLogs();
+    </script>
+</body>
+</html>
