@@ -1,18 +1,42 @@
 # Intelligent Workflow Automation System
 
-This project is a lightweight, local demonstration of an Intelligent Workflow Automation platform. It showcases a modern architecture for ingesting data (like new leads), analyzing them with logic/AI, and orchestrating automated actions based on the generated insights.
+This project is a detailed prototype of an **Intelligent Workflow Automation** platform. It demonstrates how a modern service-oriented architecture can ingest raw data, evaluate it dynamically using an AI scoring engine, and automatically trigger respective downstream integrations (like CRMs or Email services).
 
-## Core Components
+## Architecture & Flow
 
-- **Workflow Orchestration Engine**: Handles the routing of data and acts differently based on changing variables.
-- **AI Decision Engine**: Evaluates incoming records, derives a dynamic score based on the lead's profile, and explicitly decides on a subsequent workflow action (e.g., `INSTANT_CONTACT`, `NURTURE`, etc.).
-- **Mock Integration Sub-systems**: Simulates realistic outward-bound operations such as sending Emails, SMS text messages, and syncing to a CRM.
-- **Unified Dashboard UI**: A clean, single-page frontend that clearly surfaces the AI's internal decision logic, execution logs, and provides a lead generation form.
+The system operates on a decoupled client-server model:
+1. **Frontend UI**: A Single-Page Application (HTML/CSS/JS) capturing lead data and actively polling the backend for real-time logs and AI decision results.
+2. **Backend Server (Python/Flask)**: Exposes REST APIs to receive leads and manages asynchronous background threads to process the workflows without blocking the user.
+3. **AI Decision Engine**: Calculates a proprietary "Lead Score" out of 100 based on incoming variables (Contact info, Interest Level).
+4. **Mock Integrations (API Layer)**: Simulates triggering external SMS, Email, and Database software depending on the AI's ruling.
+
+### System Diagram
+
+```mermaid
+graph TD
+    UI[🖥️ Dashboard UI] -->|POST New Lead| API(⚙️ Flask API Gateway)
+    UI -.->|Polls every 1s| API
+    
+    API -->|Async Payload| WE{Workflow Engine}
+    
+    WE -->|Request Evaluation| AI[🧠 AI Decision Engine]
+    AI -.->|Returns Score 0-100| WE
+    
+    WE -->|Action: INSTANT_CONTACT| SMS[📱 SMS Service]
+    WE -->|Action: NURTURE| Email[📧 Email Service]
+    WE -->|Action: PASSIVE| Ignore[🛑 Cold List]
+    
+    WE --> CRM[(💾 CRM Database)]
+```
+
+## Dashboard Preview
+
+![Dashboard Preview](assets/dashboard.png)
 
 ## Getting Started
 
 ### Prerequisites
-Make sure you have Node.js installed.
+Make sure you have Node or Python (depending on which backend you want to run, this branch focuses on Python).
 
 ### Setup & Run
 1. Ensure you have Python installed, then set up a virtual environment and install the dependencies:
@@ -33,9 +57,12 @@ Make sure you have Node.js installed.
 - `requirements.txt` - Python project dependencies.
 - `server.js` - (Legacy) The original Node.js backend implementation.
 - `public/index.html` - The main Dashboard application.
-- `public/presentation.html` - A web-based presentation format of the conceptual system.
-- `generate-ppt.js` - Script logic for regenerating or exporting the presentation outputs.
 
-## Usage
-Simply enter a new lead into the **Simulate New Lead** form. 
-Watch the **🤖 AI Decisions** panel to see how the system interprets the lead, scores it out of 100, and routes it. You can observe the subsequent actions performed by the mock integrations live within the **System Execution Logs** panel.
+## End-to-End Usage Example
+1. You submit a lead named **Alice** with **Medium Interest**.
+2. The UI pushes the JSON payload to `/api/leads`.
+3. The server immediately returns a `202 Accepted` to keep the UI snappy.
+4. In the background, `WorkflowEngine` queries `AIDecisionEngine`.
+5. Alice is scored at **70 / 100**. This falls into the `NURTURE` bucket.
+6. The engine automatically calls `send_email` and syncs Alice to the CRM.
+7. The UI loops and pulls the latest logs via `/api/logs` and dynamically renders the result in the AI panel.
