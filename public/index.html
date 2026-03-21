@@ -6,8 +6,12 @@
     <title>Intelligent Workflow Automation</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 1200px; margin: 0 auto; display: flex; gap: 20px; }
-        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex: 1; }
+        .container { max-width: 1400px; margin: 0 auto; display: flex; gap: 20px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex: 1; min-width: 300px; }
+        #aiInsights { height: 400px; overflow-y: auto; background: #fff; }
+        .ai-card-entry { border-left: 4px solid #3498db; padding-left: 10px; margin-bottom: 15px; background: #f8f9fa; padding: 15px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .ai-score { font-weight: bold; font-size: 1.1em; }
+        .ai-action { background: #2c3e50; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; font-weight: bold; display: inline-block; margin-top: 5px; }
         h1, h2 { color: #2c3e50; }
         form { display: flex; flex-direction: column; gap: 15px; }
         label { font-weight: bold; }
@@ -47,6 +51,12 @@
             </form>
             <br>
             <button onclick="clearLogs()" style="background-color:#7f8c8d; width:100%;">Clear Logs</button>
+        </div>
+
+        <!-- AI Decision Visualization -->
+        <div class="card">
+            <h2>🤖 AI Decisions</h2>
+            <div id="aiInsights">Awaiting leads to process...</div>
         </div>
 
         <!-- Terminal Output -->
@@ -89,13 +99,48 @@
             }
         }
 
-        async function clearLogs() {
-            await fetch('/api/clear-logs');
-            fetchLogs();
+        async function fetchAIDecisions() {
+            try {
+                const res = await fetch('/api/ai-decisions');
+                const decisions = await res.json();
+                const div = document.getElementById('aiInsights');
+                if (decisions.length === 0) {
+                    div.innerHTML = "Awaiting leads to process...";
+                } else {
+                    div.innerHTML = decisions.map(d => {
+                        let scoreColor = d.score >= 80 ? '#27ae60' : d.score < 40 ? '#e74c3c' : '#f39c12';
+                        return `
+                            <div class="ai-card-entry">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                    <strong>👤 ${d.leadName}</strong>
+                                    <span style="color: #7f8c8d; font-size: 0.85em;">⏰ ${d.timestamp}</span>
+                                </div>
+                                <div style="margin-bottom: 5px;">
+                                    AI Lead Score: <span class="ai-score" style="color: ${scoreColor}">${d.score} / 100</span>
+                                </div>
+                                <div>
+                                    Workflow Action: <br>
+                                    <span class="ai-action">${d.recommendation.replace('_', ' ')}</span>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            } catch(e) { console.error(e); }
         }
 
-        setInterval(fetchLogs, 1000);
-        fetchLogs();
+        async function updateUI() {
+            fetchLogs();
+            fetchAIDecisions();
+        }
+
+        async function clearLogs() {
+            await fetch('/api/clear-logs');
+            updateUI();
+        }
+
+        setInterval(updateUI, 1000);
+        updateUI();
     </script>
 </body>
 </html>

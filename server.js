@@ -20,6 +20,7 @@ const addLog = (msg) => {
 
 // --- MOCK DATABASES & INTEGRATIONS ---
 const CRM_DB = [];
+const aiDecisions = [];
 
 const API_Layer = {
     sendSMS: async (phone, msg) => addLog(`[SMS SUB-SYSTEM] 📱 Sent to ${phone}: ${msg}`),
@@ -57,6 +58,14 @@ class WorkflowEngine {
         addLog(`[WORKFLOW ENGINE] ⚙️ Processing event for: ${leadEvent.name}`);
         
         const aiInsight = AIDecisionEngine.evaluateLead(leadEvent);
+        
+        aiDecisions.unshift({
+            leadName: leadEvent.name,
+            score: aiInsight.score,
+            recommendation: aiInsight.recommendation,
+            timestamp: new Date().toLocaleTimeString()
+        });
+        if (aiDecisions.length > 10) aiDecisions.pop();
         
         switch (aiInsight.recommendation) {
             case 'INSTANT_CONTACT':
@@ -98,8 +107,13 @@ app.get('/api/logs', (req, res) => {
     res.json(systemLogs);
 });
 
+app.get('/api/ai-decisions', (req, res) => {
+    res.json(aiDecisions);
+});
+
 app.get('/api/clear-logs', (req, res) => {
     systemLogs = [];
+    aiDecisions.length = 0;
     res.json({ message: "Logs cleared" });
 });
 
