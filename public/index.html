@@ -81,22 +81,32 @@
                 body: JSON.stringify(payload)
             });
             document.getElementById('name').value = '';
+            // Update immediately after submission
+            updateUI();
         });
 
         let lastLogsHash = "";
+        let localLogs = [];
+        let isExplicitlyCleared = false;
+
         async function fetchLogs() {
             try {
                 const res = await fetch('/api/logs');
                 const logs = await res.json();
-                const currentHash = JSON.stringify(logs);
+                
+                // Prevent Vercel cold starts from blanking out the UI unexpectedly
+                if (logs.length === 0 && localLogs.length > 0 && !isExplicitlyCleared) return;
+                if (logs.length > 0) localLogs = logs;
+
+                const currentHash = JSON.stringify(localLogs);
                 if (currentHash === lastLogsHash) return;
                 lastLogsHash = currentHash;
                 
                 const logDiv = document.getElementById('logs');
-                if (logs.length === 0) {
+                if (localLogs.length === 0) {
                     logDiv.innerHTML = "Waiting for events...";
                 } else {
-                    logDiv.innerHTML = logs.map(l => `<div class="log-entry">${l}</div>`).join('');
+                    logDiv.innerHTML = localLogs.map(l => `<div class="log-entry">${l}</div>`).join('');
                 }
                 logDiv.scrollTop = logDiv.scrollHeight;
             } catch (e) {
@@ -105,19 +115,26 @@
         }
 
         let lastDecisionsHash = "";
+        let localDecisions = [];
+
         async function fetchAIDecisions() {
             try {
                 const res = await fetch('/api/ai-decisions');
                 const decisions = await res.json();
-                const currentHash = JSON.stringify(decisions);
+                
+                // Prevent Vercel cold starts from blanking out the UI unexpectedly
+                if (decisions.length === 0 && localDecisions.length > 0 && !isExplicitlyCleared) return;
+                if (decisions.length > 0) localDecisions = decisions;
+
+                const currentHash = JSON.stringify(localDecisions);
                 if (currentHash === lastDecisionsHash) return;
                 lastDecisionsHash = currentHash;
                 
                 const div = document.getElementById('aiInsights');
-                if (decisions.length === 0) {
+                if (localDecisions.length === 0) {
                     div.innerHTML = "Awaiting leads to process...";
                 } else {
-                    div.innerHTML = decisions.map(d => {
+                    div.innerHTML = localDecisions.map(d => {
                         let scoreColor = d.score >= 80 ? '#27ae60' : d.score < 40 ? '#e74c3c' : '#f39c12';
                         return `
                             <div class="ai-card-entry">
@@ -139,20 +156,38 @@
             } catch(e) { console.error(e); }
         }
 
+        let isFetching = false;
         async function updateUI() {
-            fetchLogs();
-            fetchAIDecisions();
+            if (isFetching) return;
+            isFetching = true;
+            try {
+                await fetchLogs();
+                await fetchAIDecisions();
+            } finally {
+                isFetching = false;
+            }
         }
 
         async function clearLogs() {
+            isExplicitlyCleared = true;
             await fetch('/api/clear-logs');
+            localLogs = [];
+            localDecisions = [];
             lastLogsHash = "";
             lastDecisionsHash = "";
             updateUI();
+            isExplicitlyCleared = false;
         }
 
-        setInterval(updateUI, 1000);
-        updateUI();
+        // Use chained setTimeout instead of setInterval to prevent concurrent requests overlaps
+        function scheduleNextUpdate() {
+            setTimeout(async () => {
+                await updateUI();
+                scheduleNextUpdate();
+            }, 3000); // Polling every 3s instead of 1s to reduce API loads
+        }
+
+        updateUI().then(() => scheduleNextUpdate());
     </script>
 </body>
 </html>
