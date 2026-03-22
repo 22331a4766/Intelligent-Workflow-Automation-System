@@ -20,16 +20,16 @@ def add_log(msg):
 class API_Layer:
     @staticmethod
     def send_sms(phone, msg):
-        add_log(f"[SMS SUB-SYSTEM] 📱 Sent to {phone}: {msg}")
+        pass # No longer logging mock actions
     
     @staticmethod
     def send_email(email, msg):
-        add_log(f"[EMAIL SUB-SYSTEM] 📧 Sent to {email}: {msg}")
+        pass # No longer logging mock actions
         
     @staticmethod
     def update_crm(lead):
         crm_db.append(lead)
-        add_log(f"[CRM SUB-SYSTEM] 💾 Lead synced to CRM: {lead.get('name')} (Status: {lead.get('status')})")
+        # No longer logging mock CRM actions
 
 class AIDecisionEngine:
     @staticmethod
@@ -59,8 +59,6 @@ class AIDecisionEngine:
 class WorkflowEngine:
     @staticmethod
     def process_lead_event(lead_event):
-        add_log(f"[WORKFLOW ENGINE] ⚙️ Processing event for: {lead_event.get('name')}")
-        
         score, recommendation = AIDecisionEngine.evaluate_lead(lead_event)
         
         time_str = datetime.datetime.now().strftime('%I:%M:%S %p').lstrip('0')
@@ -87,7 +85,6 @@ class WorkflowEngine:
             lead_event['status'] = 'Cold Lead List'
             
         API_Layer.update_crm(lead_event)
-        add_log(f"[WORKFLOW ENGINE] ✅ Workflow complete for {lead_event.get('name')}.")
 
 @app.route('/')
 def index():
@@ -113,7 +110,7 @@ def receive_lead():
         "interest_level": interest_level
     }
     
-    add_log(f"[SYSTEM] 📥 Received new lead: {name} ({interest_level} Interest)")
+    add_log(f"📥 Form Input Data: Name='{name}', Phone='{lead_payload['phone']}', Interest='{interest_level}'")
     
     # Process asynchronously to match Node.js behavior
     thread = threading.Thread(target=WorkflowEngine.process_lead_event, args=(lead_payload,))

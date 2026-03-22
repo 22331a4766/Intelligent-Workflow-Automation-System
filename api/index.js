@@ -8,7 +8,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../public')));
 
 // Store logs to send to frontend
 let systemLogs = [];
@@ -118,8 +118,13 @@ app.get('/api/clear-logs', (req, res) => {
 });
 
 // START SERVER
-const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`🚀 Intelligent Workflow System running on http://localhost:${PORT}`);
-    console.log(`📊 Open http://localhost:${PORT}/presentation.html for the PPT`);
-});
+if (process.env.NODE_ENV !== 'production') {
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log(`🚀 Intelligent Workflow System running on http://localhost:${PORT}`);
+        console.log(`📊 Open http://localhost:${PORT}/presentation.html for the PPT`);
+    });
+}
+
+// Export the Express API for Vercel
+module.exports = app;

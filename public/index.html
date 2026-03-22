@@ -83,10 +83,15 @@
             document.getElementById('name').value = '';
         });
 
+        let lastLogsHash = "";
         async function fetchLogs() {
             try {
                 const res = await fetch('/api/logs');
                 const logs = await res.json();
+                const currentHash = JSON.stringify(logs);
+                if (currentHash === lastLogsHash) return;
+                lastLogsHash = currentHash;
+                
                 const logDiv = document.getElementById('logs');
                 if (logs.length === 0) {
                     logDiv.innerHTML = "Waiting for events...";
@@ -99,10 +104,15 @@
             }
         }
 
+        let lastDecisionsHash = "";
         async function fetchAIDecisions() {
             try {
                 const res = await fetch('/api/ai-decisions');
                 const decisions = await res.json();
+                const currentHash = JSON.stringify(decisions);
+                if (currentHash === lastDecisionsHash) return;
+                lastDecisionsHash = currentHash;
+                
                 const div = document.getElementById('aiInsights');
                 if (decisions.length === 0) {
                     div.innerHTML = "Awaiting leads to process...";
@@ -136,6 +146,8 @@
 
         async function clearLogs() {
             await fetch('/api/clear-logs');
+            lastLogsHash = "";
+            lastDecisionsHash = "";
             updateUI();
         }
 
