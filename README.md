@@ -50,7 +50,7 @@ Make sure you have Node or Python (depending on which backend you want to run, t
    python app.py
    ```
 3. Visit the dashboard:
-   Open **[http://localhost:3000](https://intelligent-wor-git-7a4ecd-betachandrasekhar-gmailcoms-projects.vercel.app)** in your browser.
+   Open **[http://vercel.com](https://intelligent-wor-git-7a4ecd-betachandrasekhar-gmailcoms-projects.vercel.app)** in your browser.
 
 ## Project Structure
 - `app.py` - The main Python Flask backend handling the API routes, artificial intelligence scoring logic, and workflow transitions.
